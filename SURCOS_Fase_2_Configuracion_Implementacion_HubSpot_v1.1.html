@@ -1,0 +1,221 @@
+<!doctype html><html lang='es'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Surcos · Fase 2 HubSpot</title><style>
+:root{--navy:#18354a;--green:#748b57;--cream:#f5f1e8;--ink:#263238;--muted:#68747b;--line:#dce2e5;--soft:#f5f7f8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,Arial,sans-serif;color:var(--ink);background:#edf1f2;line-height:1.52}
+.wrap{max-width:1220px;margin:auto;background:#fff;min-height:100vh;box-shadow:0 0 30px #0001}.hero{padding:58px 64px;background:linear-gradient(120deg,var(--navy),#294f60);color:#fff}
+.kicker{text-transform:uppercase;letter-spacing:.14em;font-size:13px;opacity:.8}.hero h1{font-size:38px;line-height:1.08;margin:12px 0}.hero p{font-size:18px;max-width:850px;opacity:.9}.meta{font-size:13px;opacity:.75;margin-top:24px}
+nav{position:sticky;top:0;z-index:4;background:#fff;border-bottom:1px solid var(--line);padding:12px 28px;white-space:nowrap;overflow:auto}nav a{font-size:12px;font-weight:700;color:var(--navy);text-decoration:none;margin-right:16px}
+main{padding:42px 64px 72px}section{margin-bottom:52px;scroll-margin-top:65px}h2{font-size:27px;color:var(--navy);border-bottom:2px solid var(--green);padding-bottom:8px}h3{color:var(--navy);margin-top:28px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.card{border:1px solid var(--line);border-radius:12px;padding:19px}.card b{color:var(--navy)}
+.callout{background:var(--cream);border-left:5px solid var(--green);padding:19px 23px;border-radius:6px;margin:20px 0}.warn{background:#fff5e8;border-left-color:#b87c2c}
+table{border-collapse:collapse;width:100%;font-size:11.5px;margin:18px 0;display:block;overflow:auto}th{background:var(--navy);color:#fff;text-align:left}td,th{padding:8px 9px;border:1px solid var(--line);vertical-align:top}ul{padding-left:20px}
+.flow{display:flex;flex-wrap:wrap;gap:7px;align-items:center}.node{background:var(--navy);color:white;border-radius:8px;padding:9px 12px;font-weight:700}.arrow{color:var(--green);font-size:20px}
+.badge{display:inline-block;background:#e8efe2;color:#405d31;padding:4px 9px;border-radius:16px;font-size:11px;font-weight:700}.footer{padding:24px 64px;background:var(--soft);color:var(--muted);font-size:12px}
+@media(max-width:800px){.hero,main,.footer{padding-left:24px;padding-right:24px}.grid{grid-template-columns:1fr}.hero h1{font-size:30px}}
+@media print{body{background:#fff}.wrap{box-shadow:none}nav{display:none}.hero{-webkit-print-color-adjust:exact;print-color-adjust:exact}table{font-size:9px}section{break-inside:avoid}}
+</style></head><body>
+<div class="wrap"><header class="hero"><div class="kicker">Colegio Surcos · Implementación HubSpot CRM</div>
+<h1>Fase 2 — Configuración e implementación del CRM</h1>
+<p>Plan operativo para construir en HubSpot la arquitectura aprobada en Fase 1, preparar e importar los datos, validar los procesos y dejar el portal listo para operación.</p>
+<div class="meta">Versión 1.1 · 29 septiembre 2026 · Arquitectura: Smart CRM + Sales Hub Starter · Preparado por Interhelp</div></header>
+<nav><a href="#objetivo">Objetivo</a><a href="#objetos">Objetos</a><a href="#propiedades">Propiedades</a><a href="#pipeline">Pipeline</a><a href="#tickets">Tickets</a><a href="#vistas">Vistas</a><a href="#automatizacion">Automatización</a><a href="#migracion">Migración</a><a href="#marketing">Campaña 2027</a><a href="#reportes">KPIs</a><a href="#qa">QA</a><a href="#cronograma">Cronograma</a><a href="#cierre">Cierre</a></nav>
+<main>
+<section id="objetivo"><h2>1. Objetivo y alcance</h2>
+<p>Configurar HubSpot para que Surcos pueda gestionar de manera consistente el ciclo <b>interesado → admisión → inscripción → matrícula → renovación/retención</b> y, en paralelo, registrar y seguir <b>casos especiales mediante Tickets</b>.</p>
+<div class="grid"><div class="card"><b>Smart CRM + Sales Hub Starter</b><br>Base tecnológica de esta fase.</div><div class="card"><b>Idukay</b><br>Continúa como fuente maestra académica.</div><div class="card"><b>UPCONTA</b><br>Continúa como fuente financiera.</div></div>
+<h3>Incluye</h3><ul><li>Configuración de Contactos, Negocios y Tickets.</li><li>Propiedades, pipelines, vistas, asociaciones y nomenclaturas.</li><li>Preparación, conciliación e importación piloto de datos.</li><li>Formularios y captura de origen para la campaña 2027.</li><li>Controles operativos, QA y validación con usuarios clave.</li></ul>
+<h3>No incluye</h3><ul><li>Custom Objects, Help Desk avanzado, SLA formal o workflows de nivel Professional.</li><li>Migración del expediente académico, médico, psicológico o pedagógico a HubSpot.</li><li>Sustitución de Idukay o UPCONTA.</li></ul>
+<div class="callout"><b>Prerrequisito:</b> antes de crear propiedades se exportará el inventario de propiedades/pipelines existentes del portal para evitar duplicar campos que ya estén en uso.</div></section>
+
+<section id="objetos"><h2>2. Modelo operativo de objetos</h2>
+<div class="flow"><span class="node">Contacto · Representante</span><span class="arrow">↔</span><span class="node">Negocio · Alumno + Período</span><span class="arrow">↔</span><span class="node">Ticket · Caso</span></div>
+<table><tr><th>Objeto</th><th>Unidad de registro</th><th>Regla principal</th></tr>
+<tr><td>Contacto</td><td>Una persona representante</td><td>No duplicar al representante por cada hijo. Puede asociarse a varios negocios.</td></tr>
+<tr><td>Negocio</td><td>Un alumno + un período/proceso</td><td>Conserva el histórico. Un nuevo período no sobrescribe el anterior.</td></tr>
+<tr><td>Ticket</td><td>Un caso concreto</td><td>Asociar al representante y al negocio alumno+período cuando exista.</td></tr>
+</table>
+<h3>Convención de nombres</h3><p><b>Negocio:</b> “Apellido Nombre alumno | 2027–2028 | Admisión”. <b>Ticket:</b> “Apellido Nombre alumno | Categoría | AAAA-MM”. Las convenciones deben aplicarse igual en registros manuales, formularios e importaciones.</p></section>
+
+<section id="propiedades"><h2>3. Catálogo de propiedades</h2>
+<h3>3.1 Contactos — Representantes</h3><table><tr><th>Propiedad</th><th>Nombre interno sugerido</th><th>Tipo</th><th>Obligatorio</th><th>Fuente</th><th>Acción</th><th>Uso</th></tr><tr><td>Nombre</td><td>firstname</td><td>Texto</td><td>Sí</td><td>Idukay / formulario</td><td>Estándar</td><td>Nombre del representante.</td></tr><tr><td>Apellido</td><td>lastname</td><td>Texto</td><td>Sí</td><td>Idukay / formulario</td><td>Estándar</td><td>Apellido del representante.</td></tr><tr><td>Correo electrónico</td><td>email</td><td>Email</td><td>Recomendado</td><td>Idukay / formulario</td><td>Estándar</td><td>Clave principal de comunicación/deduplicación.</td></tr><tr><td>Teléfono móvil / WhatsApp</td><td>mobilephone</td><td>Teléfono</td><td>Recomendado</td><td>Idukay / formulario</td><td>Estándar</td><td>Normalizar a formato internacional.</td></tr><tr><td>ID representante Surcos</td><td>sur_id_representante</td><td>Texto</td><td>Cuando exista</td><td>Idukay</td><td>Nueva</td><td>Cédula/pasaporte normalizado; evitar exponer en vistas innecesarias.</td></tr><tr><td>Tipo de representante</td><td>sur_tipo_representante</td><td>Selección</td><td>Sí</td><td>Idukay</td><td>Nueva</td><td>Padre; Madre; Tutor; Otro.</td></tr><tr><td>Representante principal</td><td>sur_representante_principal</td><td>Sí/No</td><td>Sí</td><td>Idukay</td><td>Nueva</td><td>Contacto prioritario para comunicaciones.</td></tr><tr><td>Representante económico</td><td>sur_representante_economico</td><td>Sí/No</td><td>No</td><td>Idukay</td><td>Nueva</td><td>Referencia operativa; facturación permanece en UPCONTA.</td></tr><tr><td>Sector / zona</td><td>sur_sector</td><td>Texto/lista</td><td>No</td><td>Idukay / formulario</td><td>Nueva</td><td>Solo si se usará para segmentación.</td></tr><tr><td>Origen original del contacto</td><td>Original source + sur_origen_detalle</td><td>Estándar + lista</td><td>Sí para leads</td><td>HubSpot</td><td>Mixta</td><td>No sobrescribir origen original.</td></tr><tr><td>Consentimiento / base de comunicación</td><td>sur_permiso_comunicacion</td><td>Lista</td><td>Según proceso</td><td>Formulario / migración validada</td><td>Nueva</td><td>Definir conforme a política institucional.</td></tr></table>
+<h3>3.2 Negocios — Alumno + período</h3><table><tr><th>Propiedad</th><th>Nombre interno sugerido</th><th>Tipo</th><th>Obligatorio</th><th>Fuente</th><th>Acción</th><th>Uso</th></tr><tr><td>Nombre del negocio</td><td>dealname</td><td>Texto</td><td>Sí</td><td>HubSpot</td><td>Estándar</td><td>Formato: Alumno | Período | Proceso.</td></tr><tr><td>Pipeline / etapa</td><td>pipeline / dealstage</td><td>Pipeline</td><td>Sí</td><td>HubSpot</td><td>Estándar</td><td>Controla el proceso.</td></tr><tr><td>ID Idukay alumno</td><td>sur_id_idukay</td><td>Texto</td><td>Cuando exista</td><td>Idukay</td><td>Nueva</td><td>Clave de conciliación.</td></tr><tr><td>Identificación alumno</td><td>sur_id_estudiante</td><td>Texto</td><td>Cuando exista</td><td>Idukay</td><td>Nueva</td><td>Cédula/pasaporte.</td></tr><tr><td>Nombre completo alumno</td><td>sur_nombre_estudiante</td><td>Texto</td><td>Sí</td><td>Idukay / formulario</td><td>Nueva</td><td>Entidad operativa dentro del negocio.</td></tr><tr><td>Fecha de nacimiento</td><td>sur_fecha_nacimiento</td><td>Fecha</td><td>Recomendado</td><td>Idukay / formulario</td><td>Nueva</td><td>Validación de identidad/edad.</td></tr><tr><td>Período académico</td><td>sur_periodo_academico</td><td>Selección</td><td>Sí</td><td>HubSpot</td><td>Nueva</td><td>Ej. 2026–2027; 2027–2028.</td></tr><tr><td>Nivel / grado de interés</td><td>sur_grado_interes</td><td>Selección</td><td>Sí admisión</td><td>Formulario / Admisiones</td><td>Nueva</td><td>Catálogo único.</td></tr><tr><td>Curso actual / destino</td><td>sur_curso</td><td>Selección</td><td>Sí cuando aplique</td><td>Idukay / Admisiones</td><td>Nueva</td><td>Normalizado.</td></tr><tr><td>Paralelo</td><td>sur_paralelo</td><td>Selección</td><td>No</td><td>Idukay</td><td>Nueva</td><td>Solo matriculados.</td></tr><tr><td>Institución anterior</td><td>sur_institucion_anterior</td><td>Texto</td><td>No</td><td>Idukay / formulario</td><td>Nueva</td><td>Análisis de captación.</td></tr><tr><td>Fecha ingreso lead</td><td>sur_fecha_ingreso_lead</td><td>Fecha</td><td>Sí prospectos</td><td>HubSpot / migración</td><td>Nueva</td><td>Fecha histórica cuando exista.</td></tr><tr><td>Estado de inscripción</td><td>sur_estado_inscripcion</td><td>Selección</td><td>Según etapa</td><td>Admisiones</td><td>Nueva</td><td>No iniciado; En proceso; Completo.</td></tr><tr><td>Fecha matrícula</td><td>sur_fecha_matricula</td><td>Fecha</td><td>Al matricular</td><td>Idukay</td><td>Nueva</td><td>Confirmación oficial.</td></tr><tr><td>Estado renovación</td><td>sur_estado_renovacion</td><td>Selección</td><td>Alumnos actuales</td><td>HubSpot + Idukay</td><td>Nueva</td><td>Pendiente; En gestión; Renovado; No renovado; Retirado.</td></tr><tr><td>Riesgo de salida</td><td>sur_riesgo_salida</td><td>Selección</td><td>No</td><td>Admisiones / Ticket</td><td>Nueva</td><td>Sin riesgo; Bajo; Medio; Alto.</td></tr><tr><td>Motivo no renovación/retiro</td><td>sur_motivo_no_renovacion</td><td>Selección</td><td>Al perder/retirar</td><td>Surcos</td><td>Nueva</td><td>Catálogo aprobado.</td></tr><tr><td>Origen / campaña</td><td>sur_origen / campaign fields</td><td>Lista/texto</td><td>Sí leads</td><td>HubSpot</td><td>Mixta</td><td>Conservar UTM cuando esté disponible.</td></tr><tr><td>Propietario del negocio</td><td>hubspot_owner_id</td><td>Usuario</td><td>Sí</td><td>HubSpot</td><td>Estándar</td><td>Responsable operativo.</td></tr></table>
+<h3>3.3 Tickets — Casos especiales</h3><table><tr><th>Propiedad</th><th>Nombre interno sugerido</th><th>Tipo</th><th>Obligatorio</th><th>Fuente</th><th>Acción</th><th>Uso</th></tr><tr><td>Nombre del ticket</td><td>subject</td><td>Texto</td><td>Sí</td><td>HubSpot</td><td>Estándar</td><td>Alumno | Categoría | Fecha/tema.</td></tr><tr><td>Categoría</td><td>sur_categoria_caso</td><td>Selección</td><td>Sí</td><td>Usuario</td><td>Nueva</td><td>Académico; Convivencia; DECE; Administrativo; Financiero; Queja/Reclamo; Solicitud especial; Retención/Riesgo; Otro.</td></tr><tr><td>Prioridad</td><td>hs_ticket_priority</td><td>Selección</td><td>Sí</td><td>Usuario</td><td>Estándar</td><td>Baja/Media/Alta; usar criterio institucional; adaptar a opciones disponibles.</td></tr><tr><td>Responsable</td><td>hubspot_owner_id</td><td>Usuario</td><td>Sí</td><td>Usuario</td><td>Estándar</td><td>Una persona responsable.</td></tr><tr><td>Próxima acción</td><td>sur_proxima_accion</td><td>Texto</td><td>Sí abierto</td><td>Usuario</td><td>Nueva</td><td>Acción operativa, no expediente sensible.</td></tr><tr><td>Fecha próxima acción</td><td>sur_fecha_proxima_accion</td><td>Fecha</td><td>Sí abierto</td><td>Usuario</td><td>Nueva</td><td>Control manual de seguimiento.</td></tr><tr><td>Riesgo de no renovación</td><td>sur_riesgo_no_renovacion</td><td>Sí/No</td><td>Cuando aplique</td><td>Usuario</td><td>Nueva</td><td>Conecta caso con retención.</td></tr><tr><td>Resultado / resolución</td><td>sur_resolucion_caso</td><td>Texto/lista</td><td>Al resolver</td><td>Usuario</td><td>Nueva</td><td>Resumen operativo.</td></tr><tr><td>Motivo cierre</td><td>sur_motivo_cierre</td><td>Selección</td><td>Al cerrar</td><td>Usuario</td><td>Nueva</td><td>Resuelto; Desistido; Duplicado; Derivado; Otro.</td></tr></table>
+<div class="callout"><b>Regla:</b> primero reutilizar propiedades estándar o existentes cuando sean semánticamente correctas. Crear una propiedad SUR únicamente cuando el dato no exista o requiera una definición institucional específica.</div></section>
+
+<section id="pipeline"><h2>4. Pipeline de Admisión, Matrícula y Renovación</h2>
+<table><tr><th>Etapa</th><th>Definición</th><th>Entrada</th><th>Salida / campo mínimo</th></tr>
+<tr><td>Nuevo interesado</td><td>Lead nuevo identificado.</td><td>Formulario, base histórica o registro manual.</td><td>Representante + alumno + período + origen.</td></tr>
+<tr><td>Contacto iniciado</td><td>Admisiones realizó primer contacto.</td><td>Primer intento/actividad.</td><td>Resultado de contacto + próxima acción.</td></tr>
+<tr><td>Calificado</td><td>Existe interés y encaje para el período/grado.</td><td>Necesidad validada.</td><td>Grado de interés + período.</td></tr>
+<tr><td>Visita / entrevista</td><td>Familia avanza a interacción formal.</td><td>Visita, entrevista o actividad equivalente.</td><td>Resultado y siguiente paso.</td></tr>
+<tr><td>Admisión / documentación</td><td>Proceso institucional en curso.</td><td>Familia decide avanzar.</td><td>Estado de documentación/inscripción.</td></tr>
+<tr><td>Inscrito</td><td>Surcos registra inscripción previa a matrícula.</td><td>Inscripción confirmada.</td><td>Preparado para matrícula.</td></tr>
+<tr><td>Matriculado — Ganado</td><td>Idukay confirma matrícula oficial.</td><td>Matrícula registrada.</td><td>Fecha de matrícula + curso/período.</td></tr>
+<tr><td>No matriculado — Perdido</td><td>No continúa el proceso.</td><td>Decisión o pérdida.</td><td>Motivo de pérdida obligatorio.</td></tr>
+</table>
+<div class="callout"><b>Decisión de arquitectura:</b> las renovaciones no se mezclarán con captación. Surcos operará un segundo pipeline comercial independiente denominado <b>Renovaciones / Retención</b>. Esto permite medir adquisición y permanencia por separado y conservar el histórico de cada alumno por período.</div>
+<h3>Motivos de pérdida/no renovación</h3><p>Costo; cambio de domicilio; cambio de ciudad/país; cambio de institución; propuesta académica; situación familiar; inconformidad; necesidades no cubiertas; sin respuesta; decidió postergar; graduación/fin de ciclo; otro.</p></section>
+
+
+<section id="renovaciones"><h2>5. Pipeline de Renovaciones / Retención</h2>
+<p>Este pipeline gestionará exclusivamente a <b>alumnos actuales elegibles para continuar en el siguiente período académico</b>. Cada oportunidad de renovación será un nuevo Negocio, manteniendo la regla <b>Negocio = Alumno + Período</b>.</p>
+<div class="flow"><span class="node">Universo renovable</span><span class="arrow">→</span><span class="node">Renovación comunicada</span><span class="arrow">→</span><span class="node">Familia contactada</span><span class="arrow">→</span><span class="node">Intención confirmada</span><span class="arrow">→</span><span class="node">En proceso</span><span class="arrow">→</span><span class="node">Renovado</span></div>
+<table><tr><th>Etapa</th><th>Definición</th><th>Criterio de entrada</th><th>Salida / dato mínimo</th></tr>
+<tr><td>1. Pendiente de renovación</td><td>Alumno actual elegible para el siguiente período.</td><td>Incluido en universo oficial proveniente de Idukay.</td><td>Alumno, período destino, representante y curso actual/destino.</td></tr>
+<tr><td>2. Renovación comunicada</td><td>La familia recibió la comunicación/campaña.</td><td>Primer envío o comunicación registrada.</td><td>Fecha/canal de comunicación.</td></tr>
+<tr><td>3. Familia contactada</td><td>Existe interacción efectiva con el representante.</td><td>Respuesta, llamada o conversación efectiva.</td><td>Resultado + próxima acción.</td></tr>
+<tr><td>4. Intención confirmada</td><td>La familia expresó intención de continuar.</td><td>Confirmación verbal/digital.</td><td>Intención: Renovará / En duda / No renovará.</td></tr>
+<tr><td>5. En proceso de renovación</td><td>La familia inició requisitos/pago/proceso institucional.</td><td>Acción verificable de renovación.</td><td>Estado del proceso + próxima acción.</td></tr>
+<tr><td>6. Renovado — Ganado</td><td>Idukay confirma la renovación/matrícula del nuevo período.</td><td>Registro oficial.</td><td>Fecha de renovación/matrícula y período.</td></tr>
+<tr><td>7. No renovado — Perdido</td><td>La familia decide no continuar o finaliza campaña sin renovación.</td><td>Decisión confirmada o criterio de cierre aprobado.</td><td>Motivo obligatorio + fecha decisión.</td></tr>
+<tr><td>8. Retirado</td><td>Alumno sale durante el período o antes de completar renovación.</td><td>Retiro confirmado institucionalmente.</td><td>Fecha + motivo de retiro.</td></tr></table>
+
+<h3>Nomenclatura</h3>
+<p><b>Ejemplo:</b> “Juan Pérez | 2027–2028 | Renovación”. El negocio 2026–2027 permanece intacto. De esta manera HubSpot puede reconstruir la relación del alumno con Surcos a través del tiempo sin convertir al alumno en Custom Object.</p>
+
+<h3>Propiedades específicas de renovación</h3>
+<table><tr><th>Propiedad</th><th>Nombre interno sugerido</th><th>Tipo</th><th>Uso</th></tr>
+<tr><td>Período de renovación</td><td>sur_periodo_academico</td><td>Selección</td><td>Período destino.</td></tr>
+<tr><td>Elegible para renovación</td><td>sur_elegible_renovacion</td><td>Sí/No</td><td>Define universo inicial.</td></tr>
+<tr><td>Estado de intención</td><td>sur_intencion_renovacion</td><td>Selección</td><td>Sin respuesta; Renovará; En duda; No renovará.</td></tr>
+<tr><td>Riesgo de salida</td><td>sur_riesgo_salida</td><td>Selección</td><td>Sin riesgo; Bajo; Medio; Alto.</td></tr>
+<tr><td>Motivo no renovación</td><td>sur_motivo_no_renovacion</td><td>Selección</td><td>Obligatorio al cerrar perdido.</td></tr>
+<tr><td>Fecha decisión</td><td>sur_fecha_decision_renovacion</td><td>Fecha</td><td>Fecha de confirmación.</td></tr>
+<tr><td>Fecha renovación</td><td>sur_fecha_renovacion</td><td>Fecha</td><td>Confirmación oficial desde Idukay.</td></tr></table>
+
+<h3>Creación del universo renovable</h3>
+<ol><li>Extraer de Idukay los alumnos activos del período vigente.</li><li>Excluir graduados, retirados confirmados y casos institucionalmente no elegibles.</li><li>Conciliar representante ↔ alumno mediante ID Idukay/identificación.</li><li>Preparar un archivo de Negocios para el <b>período destino</b>.</li><li>Importar los negocios al pipeline Renovaciones / Retención y asociarlos a sus Contactos.</li><li>Validar muestra antes de cargar el universo completo.</li></ol>
+<p>Este proceso no depende de workflows Professional. Puede ejecutarse mediante importación controlada al inicio de cada campaña y actualizarse con importaciones posteriores; Make se utilizará únicamente si existe una regla repetitiva que justifique automatización.</p>
+
+<h3>Conexión con Tickets</h3>
+<p>Un Ticket marcado con <b>Riesgo de no renovación = Sí</b> debe hacer visible el alumno en la vista de riesgo de retención. El Ticket conserva el caso y su resolución; el Negocio de renovación conserva el resultado comercial de permanencia. No deben fusionarse ambos propósitos.</p>
+
+<h3>Vistas específicas</h3>
+<table><tr><th>Vista</th><th>Filtro</th><th>Uso</th></tr>
+<tr><td>Universo pendiente</td><td>Pendiente de renovación</td><td>Control de cobertura de campaña.</td></tr>
+<tr><td>Sin contacto efectivo</td><td>Comunicada + sin interacción</td><td>Priorizar seguimiento.</td></tr>
+<tr><td>En duda</td><td>Intención = En duda</td><td>Acciones de retención.</td></tr>
+<tr><td>Alto riesgo</td><td>Riesgo = Alto</td><td>Intervención prioritaria.</td></tr>
+<tr><td>En proceso</td><td>Etapa = En proceso de renovación</td><td>Evitar abandono del trámite.</td></tr>
+<tr><td>Renovados</td><td>Ganado</td><td>Avance y tasa de renovación.</td></tr>
+<tr><td>No renovados</td><td>Perdido / Retirado</td><td>Análisis de causas.</td></tr></table>
+
+<h3>KPIs de Renovación y Retención</h3>
+<table><tr><th>KPI</th><th>Definición</th></tr>
+<tr><td>Universo renovable</td><td>Total de alumnos elegibles al inicio de la campaña.</td></tr>
+<tr><td>% familias contactadas</td><td>Familias con contacto efectivo ÷ universo renovable.</td></tr>
+<tr><td>% intención positiva</td><td>Intención “Renovará” ÷ familias con intención registrada.</td></tr>
+<tr><td>Tasa de renovación</td><td>Alumnos Renovados ÷ universo renovable.</td></tr>
+<tr><td>Tasa de no renovación</td><td>No renovados ÷ universo renovable.</td></tr>
+<tr><td>Alumnos en riesgo</td><td>Total y % con riesgo Medio/Alto.</td></tr>
+<tr><td>Motivos de no renovación</td><td>Distribución por motivo estructurado.</td></tr>
+<tr><td>Conversión por etapa</td><td>Avance del universo entre etapas del pipeline.</td></tr></table>
+</section>
+<section id="tickets"><h2>6. Pipeline de Tickets — Casos especiales</h2>
+<table><tr><th>Etapa</th><th>Criterio</th><th>Requisito</th></tr>
+<tr><td>Nuevo</td><td>Caso registrado.</td><td>Contacto/negocio asociado cuando sea posible.</td></tr>
+<tr><td>Clasificación</td><td>Se determina tipo y prioridad.</td><td>Categoría + prioridad.</td></tr>
+<tr><td>Asignado</td><td>Existe responsable.</td><td>Propietario asignado.</td></tr>
+<tr><td>En seguimiento</td><td>Se ejecutan acciones.</td><td>Próxima acción + fecha.</td></tr>
+<tr><td>Esperando respuesta</td><td>Depende de tercero/familia.</td><td>Registrar qué se espera y fecha de revisión.</td></tr>
+<tr><td>Resuelto</td><td>Existe solución/resultado.</td><td>Resolución registrada.</td></tr>
+<tr><td>Cerrado</td><td>No requiere más gestión.</td><td>Motivo de cierre.</td></tr>
+</table>
+<p><b>Escalamiento operativo:</b> Alta/Crítica → autoridad definida por Surcos; riesgo de salida → marcar propiedad y notificar operativamente a Admisiones/Gerencia; caso financiero → Colecturía; convivencia/DECE → área correspondiente. Si la licencia no permite automatizar una regla, se ejecutará mediante tareas/procedimiento y, solo si aporta valor, Make.</p>
+<div class="callout warn"><b>Datos sensibles:</b> el Ticket documenta trazabilidad, responsable, acciones y resolución. No debe contener historias clínicas, diagnósticos, informes psicológicos o pedagógicos sensibles.</div></section>
+
+<section id="vistas"><h2>7. Vistas operativas y segmentación</h2>
+<table><tr><th>Área</th><th>Vista propuesta</th><th>Filtro principal</th></tr>
+<tr><td>Admisiones</td><td>Nuevos sin contactar</td><td>Etapa Nuevo interesado + sin actividad efectiva.</td></tr>
+<tr><td>Admisiones</td><td>Seguimientos de hoy / vencidos</td><td>Próxima acción ≤ hoy.</td></tr>
+<tr><td>Admisiones</td><td>Admisiones activas</td><td>Etapas Calificado a Inscrito.</td></tr>
+<tr><td>Secretaría</td><td>Pendientes de confirmación de matrícula</td><td>Inscrito + fecha matrícula vacía.</td></tr>
+<tr><td>Gerencia</td><td>Funnel período actual</td><td>Negocios del período por etapa/origen.</td></tr>
+<tr><td>Gerencia</td><td>Riesgo de no renovación</td><td>Riesgo Medio/Alto o ticket de retención.</td></tr>
+<tr><td>Admisiones / Retención</td><td>Renovaciones pendientes</td><td>Pipeline Renovaciones / Retención sin cierre.</td></tr>
+<tr><td>Admisiones / Retención</td><td>Familias en duda</td><td>Intención = En duda.</td></tr>
+<tr><td>DECE / responsables</td><td>Casos abiertos</td><td>Tickets no cerrados asignados al usuario/área.</td></tr>
+<tr><td>Colecturía</td><td>Casos financieros abiertos</td><td>Categoría Financiero + abierto.</td></tr>
+</table>
+<p>Las listas/segmentos se utilizarán para públicos operativos y comunicaciones cuando estén disponibles en el nivel contratado. Se priorizarán filtros simples y mantenibles sobre una proliferación de listas.</p></section>
+
+<section id="automatizacion"><h2>8. Automatización compatible con Starter</h2>
+<table><tr><th>Proceso</th><th>Método preferido</th><th>Criterio</th></tr>
+<tr><td>Captura de formularios</td><td>HubSpot Forms / integración existente</td><td>Crear/actualizar contacto y conservar fuente.</td></tr>
+<tr><td>Creación de negocio desde formulario</td><td>Capacidad disponible del portal o Make</td><td>Usar Make solo cuando Starter no cubra la asociación/creación requerida.</td></tr>
+<tr><td>Asignación de responsable</td><td>Regla disponible o procedimiento manual</td><td>No depender de workflows Pro.</td></tr>
+<tr><td>Recordatorios de seguimiento</td><td>Tareas / vistas por fecha</td><td>Proceso operativo base.</td></tr>
+<tr><td>Escalamiento de tickets</td><td>Manual/tarea; Make si es necesario</td><td>Solo automatizar reglas repetibles y estables.</td></tr>
+<tr><td>Sincronización Idukay</td><td>Inicialmente importación controlada</td><td>Evaluar integración futura después de estabilizar el modelo.</td></tr>
+<tr><td>Creación campaña de renovación</td><td>Importación controlada de negocios</td><td>Crear un negocio alumno+período para cada alumno elegible sin depender de workflows Pro.</td></tr>
+</table>
+<p>Cualquier automatización construida en Make deberá documentar: disparador, condición, objetos afectados, campos modificados, manejo de errores, propietario y procedimiento de prueba.</p></section>
+
+<section id="migracion"><h2>9. Preparación e importación de datos</h2>
+<h3>Fuentes verificadas</h3>
+<p>Idukay 2024–25: 292 filas / 269 columnas; Idukay 2025–26: 299 / 275; Idukay 2026–27: 315 / 275. Matrices operativas: 309 filas (24–25) y 313 (25–26). Interesados históricos: 606 filas (23–24) y 119 (24–25).</p>
+<h3>Orden de trabajo</h3>
+<ol><li>Crear catálogo y diccionario final.</li><li>Normalizar emails, teléfonos, identificaciones, nombres, períodos y cursos.</li><li>Conciliar representantes repetidos entre años.</li><li>Conciliar interesados 23–25 contra alumnos matriculados 24–27.</li><li>Asignar ID externo/clave de conciliación.</li><li>Preparar archivo de Contactos.</li><li>Preparar archivo de Negocios alumno+período.</li><li>Preparar asociaciones Contacto ↔ Negocio.</li><li>Ejecutar importación piloto.</li><li>Validar y recién entonces ejecutar lote completo.</li></ol>
+<h3>Matching / deduplicación</h3>
+<p><b>Representante:</b> email → identificación → teléfono normalizado → revisión manual por nombre. <b>Alumno:</b> ID Idukay → identificación → nombre + fecha de nacimiento. No se crearán registros automáticamente cuando el match sea ambiguo.</p>
+<h3>Piloto</h3><p>Importar un conjunto pequeño y representativo: familias con un hijo, varios hijos, prospecto histórico convertido, alumno actual, retirado y registros con datos incompletos. Validar asociaciones y vistas antes del lote general.</p>
+<div class="callout"><b>Rollback:</b> etiquetar cada lote con una propiedad/identificador de migración y conservar archivos fuente y transformados. Si el piloto falla, eliminar/corregir únicamente los registros del lote antes de repetir.</div></section>
+
+<section id="marketing"><h2>10. Preparación para campaña de matriculación 2027</h2>
+<h3>Captura</h3><ul><li>Formulario con datos del representante, alumno, edad/fecha nacimiento, grado de interés y período.</li><li>Campos ocultos o tracking para fuente, campaña y UTM cuando corresponda.</li><li>Evitar solicitar información académica/sensible que no sea necesaria en la primera conversión.</li></ul>
+<h3>Convención UTM</h3><p><b>utm_source</b>: meta, google, instagram, facebook, email, organic, referral. <b>utm_medium</b>: paid_social, cpc, organic_social, email, referral. <b>utm_campaign</b>: surcos_matriculas_2027_2028. Mantener nomenclatura estable durante toda la campaña.</p>
+<h3>Funnel medible</h3><div class="flow"><span class="node">Lead</span><span class="arrow">→</span><span class="node">Contacto</span><span class="arrow">→</span><span class="node">Calificado</span><span class="arrow">→</span><span class="node">Visita</span><span class="arrow">→</span><span class="node">Inscripción</span><span class="arrow">→</span><span class="node">Matrícula</span></div></section>
+
+<section id="reportes"><h2>11. Reportes y KPIs</h2>
+<p>Los reportes se construirán con las herramientas disponibles en Smart CRM + Sales Hub Starter; si un cruce avanzado no está disponible, se resolverá mediante exportación/hoja de análisis antes de justificar un upgrade.</p>
+<table><tr><th>KPI</th><th>Cálculo / lectura</th><th>Fuente</th></tr>
+<tr><td>Leads por origen</td><td>Nuevos interesados agrupados por origen/campaña.</td><td>Contactos/Negocios</td></tr>
+<tr><td>Conversión por etapa</td><td>% que avanza entre etapas del pipeline.</td><td>Negocios</td></tr>
+<tr><td>Matrículas</td><td>Negocios ganados / matrícula confirmada.</td><td>Negocios + Idukay</td></tr>
+<tr><td>Conversión Lead → Matrícula</td><td>Matriculados ÷ leads del período.</td><td>Negocios</td></tr>
+<tr><td>Tiempo de primera respuesta</td><td>Diferencia entre ingreso y primer contacto; según datos disponibles.</td><td>Actividades / exportación si es necesario</td></tr>
+<tr><td>No matrícula / no renovación por motivo</td><td>Distribución de motivos estructurados.</td><td>Negocios</td></tr>
+<tr><td>Casos abiertos / resueltos</td><td>Tickets por etapa, categoría y responsable.</td><td>Tickets</td></tr>
+<tr><td>Riesgo de salida</td><td>Alumnos con riesgo Medio/Alto.</td><td>Negocios/Tickets</td></tr>
+<tr><td>Tasa de renovación</td><td>Renovados ÷ universo renovable.</td><td>Pipeline Renovaciones</td></tr>
+<tr><td>No renovación por motivo</td><td>Distribución de negocios perdidos por motivo.</td><td>Pipeline Renovaciones</td></tr>
+</table></section>
+
+<section id="qa"><h2>12. QA y UAT — Pruebas de aceptación</h2>
+<table><tr><th>Caso de prueba</th><th>Resultado esperado</th></tr>
+<tr><td>Representante con dos hijos</td><td>Un Contacto asociado a dos Negocios alumno+período.</td></tr>
+<tr><td>Mismo alumno, nuevo período</td><td>Nuevo registro de proceso sin perder histórico anterior.</td></tr>
+<tr><td>Lead histórico ya matriculado</td><td>Se concilia, no se duplica el representante.</td></tr>
+<tr><td>Formulario campaña 2027</td><td>Contacto/negocio conserva origen y período correctos.</td></tr>
+<tr><td>Negocio pasa a Matriculado</td><td>Fecha y datos mínimos están completos y validados con Idukay.</td></tr>
+<tr><td>Caso especial</td><td>Ticket asociado, categorizado, con responsable y próxima acción.</td></tr>
+<tr><td>Ticket de riesgo de salida</td><td>Marca riesgo y puede localizarse en vista de retención.</td></tr>
+<tr><td>Representante con dos hijos renovables</td><td>Un Contacto asociado a dos negocios de renovación independientes.</td></tr>
+<tr><td>Renovación nuevo período</td><td>Se crea negocio del período destino sin sobrescribir el negocio histórico.</td></tr>
+<tr><td>No renovación</td><td>No permite cierre perdido sin motivo estructurado según procedimiento.</td></tr>
+<tr><td>Registro con email duplicado</td><td>No crea segundo contacto sin revisión.</td></tr>
+</table>
+<p>UAT será validado por al menos un usuario de Admisiones, Secretaría y responsable administrativo/gerencial antes de liberar el modelo.</p></section>
+
+<section id="cronograma"><h2>13. Cronograma propuesto — 4 semanas</h2>
+<table><tr><th>Semana</th><th>Trabajo</th><th>Hito</th></tr>
+<tr><td>1</td><td>Auditoría del portal; propiedades; catálogos; pipelines de Admisiones y Renovaciones; pipeline de Tickets; nomenclaturas; permisos.</td><td>Estructura CRM configurada.</td></tr>
+<tr><td>2</td><td>Limpieza/conciliación; vistas; formularios; configuración Tickets; preparación del universo renovable; archivos de importación.</td><td>Dataset piloto preparado.</td></tr>
+<tr><td>3</td><td>Importación piloto; asociaciones; QA; ajustes; reportes básicos; pruebas de captura.</td><td>Piloto aprobado.</td></tr>
+<tr><td>4</td><td>Migración controlada; UAT; documentación; correcciones finales; handoff a capacitación.</td><td>Portal listo para operación.</td></tr>
+</table>
+<h3>RACI simplificado</h3>
+<table><tr><th>Actividad</th><th>Interhelp</th><th>Secretaría</th><th>Admisiones</th><th>Gerencia</th><th>Sistemas</th></tr>
+<tr><td>Diseño/configuración HubSpot</td><td>R/A</td><td>C</td><td>C</td><td>C</td><td>C</td></tr>
+<tr><td>Validación datos académicos</td><td>C</td><td>R/A</td><td>C</td><td>I</td><td>C</td></tr>
+<tr><td>Validación funnel/campos admisión</td><td>R</td><td>C</td><td>A/R</td><td>C</td><td>I</td></tr>
+<tr><td>Validación casos/tickets</td><td>R</td><td>C</td><td>C</td><td>A</td><td>C</td></tr>
+<tr><td>Importación y QA técnico</td><td>R/A</td><td>C</td><td>C</td><td>I</td><td>C</td></tr>
+<tr><td>Aprobación UAT</td><td>R</td><td>R</td><td>R</td><td>A</td><td>C</td></tr>
+</table><p><small>R = Responsable · A = Aprueba · C = Consultado · I = Informado.</small></p></section>
+
+<section id="cierre"><h2>14. Entregables y cierre de Fase 2</h2>
+<h3>Entregables</h3><ul><li>Propiedades configuradas y documentadas.</li><li>Pipelines de Admisiones/Matrículas Nuevas, Renovaciones/Retención y Tickets.</li><li>Vistas operativas por área.</li><li>Formularios/captura y convención de atribución 2027.</li><li>Dataset limpio, archivos de migración y bitácora de conciliación.</li><li>Importación piloto y migración aprobada.</li><li>Reportes/KPIs base disponibles según licencia.</li><li>Manual técnico breve de estructura, nomenclaturas y automatizaciones.</li><li>Registro de QA/UAT y pendientes.</li></ul>
+<h3>Criterios de cierre</h3><p>La Fase 2 termina cuando el modelo funciona con datos reales, las asociaciones críticas han sido verificadas, los funnels de captación y renovación pueden operarse de principio a fin, los casos pueden registrarse y cerrarse mediante Tickets, no existen duplicaciones críticas conocidas, los usuarios clave aprueban UAT y queda documentado el procedimiento de mantenimiento.</p>
+<div class="callout"><b>Transición a Fase 3:</b> capacitación por rol, operación asistida, campaña 2027, disciplina de seguimiento, medición de KPIs y optimización después de las primeras semanas de uso.</div></section>
+</main><div class="footer">Colegio Surcos · Implementación HubSpot CRM · Fase 2 v1.1 · Interhelp · Smart CRM + Sales Hub Starter</div></div>
+</body></html>
